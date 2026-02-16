@@ -1,13 +1,14 @@
 package telegramapi
 
 import (
+	"context"
 	"dudanseai_bot/internal/domain"
 
 	"github.com/go-telegram/bot"
 )
 
-func (b *BotAPI) StartFunnelHandler(user domain.User) {
-	msg, err := b.uc.StartFunnel(user)
+func (b *BotAPI) StartFunnelHandler(ctx context.Context, user domain.User) {
+	msg, err := b.uc.StartFunnel(ctx, user)
 	if err != nil {
 		return
 	}

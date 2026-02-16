@@ -17,9 +17,9 @@ import (
 )
 
 type UseCase interface {
-	StartBot(domain.User) (*domain.Message, error)
-	StartFunnel(domain.User) (*domain.Message, error)
-	OfferLeadMagnet(domain.User) (*domain.Message, error)
+	StartBot(context.Context, domain.User) (*domain.Message, error)
+	StartFunnel(context.Context, domain.User) (*domain.Message, error)
+	OfferLeadMagnet(context.Context, domain.User) (*domain.Message, error)
 }
 
 type BotAPI struct {

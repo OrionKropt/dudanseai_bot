@@ -12,7 +12,7 @@ func (b *BotAPI) StartHandler(ctx context.Context, api *bot.Bot, update *models.
 	var err error
 	chat := update.Message.Chat
 	user := domain.NewUser(chat.ID, chat.Username, chat.FirstName, chat.LastName)
-	msg, err := b.uc.StartBot(user)
+	msg, err := b.uc.StartBot(ctx, user)
 	if err != nil {
 		return
 	}
