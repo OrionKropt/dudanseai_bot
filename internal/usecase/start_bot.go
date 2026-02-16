@@ -23,7 +23,7 @@ func (c *Core) StartBot(ctx context.Context, user domain.User) (msg *domain.Mess
 	c.log.Log(logger.INFO, "User created", "id", user.ID.String(), "username", user.Username)
 
 	keyboard := domain.NewKeyboard()
-	keyboard.Row().AddButton("Начать", domain.ActionQualification)
+	keyboard.Row().AddButton("Начать", domain.ActionOfferLeadMagnet)
 	return domain.NewMessage(user.ChatID, `Привет 👋
 	Ты попал в AI-систему контента и продаж.
 	

@@ -29,6 +29,6 @@ func (c *Core) OfferLeadMagnet(ctx context.Context, user domain.User) (msg *doma
 		c.log.Log(logger.ERROR, msgErr, "error", err.Error())
 		return nil, errors.New(msgErr)
 	}
-	keyboard.Row().AddButtonURL("📥 Забрать гайд ", domain.ActionGetGuide, link)
+	keyboard.Row().AddButtonURL("📥 Забрать гайд ", link)
 	return domain.NewMessage(user.ChatID, guide.Description, keyboard), nil
 }

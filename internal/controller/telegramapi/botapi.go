@@ -18,7 +18,6 @@ import (
 
 type UseCase interface {
 	StartBot(context.Context, domain.User) (*domain.Message, error)
-	StartFunnel(context.Context, domain.User) (*domain.Message, error)
 	OfferLeadMagnet(context.Context, domain.User) (*domain.Message, error)
 }
 
@@ -43,7 +42,6 @@ func NewBot(inst *slog.Logger, uc UseCase, token string) *BotAPI {
 
 func (b *BotAPI) initHandlers() {
 	b.API.RegisterHandler(bot.HandlerTypeMessageText, "start", bot.MatchTypeCommand, b.StartHandler)
-	b.actionsHandler.RegisterHandler(domain.ActionQualification, b.StartFunnelHandler)
 	b.actionsHandler.RegisterHandler(domain.ActionOfferLeadMagnet, b.OfferLeadMagnetHandler)
 }
 

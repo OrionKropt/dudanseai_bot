@@ -9,15 +9,11 @@ import (
 type ActionType string
 
 const (
-	ActionStartFunnel     = "START_FUNNEL"
-	ActionGetGuide        = "GET_GUIDE"
 	ActionOfferLeadMagnet = "OFFER_LEAD_MAGNET"
-	ActionQualification   = "QUALIFICATION"
 )
 
 const (
 	UserStateStart             = "START"
-	UserStateQualification     = "QUALIFICATION"
 	UserStateGettingLeadMagnet = "GETTING_LEAD_MAGNET"
 	UserStateReady             = "READY"
 )
