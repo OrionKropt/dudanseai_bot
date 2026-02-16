@@ -2,6 +2,7 @@ package domain
 
 import (
 	"dudanseai_bot/internal/infrastructure/uuid"
+	"strconv"
 	"time"
 )
 
@@ -27,8 +28,8 @@ const (
 	UserRoleEngineer = "engineer"
 )
 
-func GenerateID(username string) UserID {
-	id := uuid.Generate([]byte(username))
+func generateUserID(chatID int64) UserID {
+	id := uuid.Generate([]byte(strconv.FormatInt(chatID, 10)))
 	return UserID(id)
 }
 
@@ -49,10 +50,12 @@ type User struct {
 	Role            string
 	State           UserState
 	LastInteraction time.Time
+	CreatedAt       time.Time
 }
 
 func NewUser(chatID int64, username, name, surname string) User {
 	return User{
+		ID:              generateUserID(chatID),
 		ChatID:          ChatID(chatID),
 		Username:        username,
 		Name:            name,
