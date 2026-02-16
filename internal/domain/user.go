@@ -13,9 +13,8 @@ const (
 )
 
 const (
-	UserStateStart             = "START"
-	UserStateGettingLeadMagnet = "GETTING_LEAD_MAGNET"
-	UserStateReady             = "READY"
+	UserStateStart = "START"
+	UserStateReady = "READY"
 )
 
 const (
