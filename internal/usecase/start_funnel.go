@@ -1,17 +1,24 @@
 package usecase
 
 import (
+	"context"
 	"dudanseai_bot/internal/domain"
 	"dudanseai_bot/pkg/logger"
+	"errors"
 )
 
-func (c *Core) StartFunnel(user domain.User) (msg *domain.Message, err error) {
-	if user, err = c.fetchUserByChatID(user.ChatID); err != nil {
+func (c *Core) StartFunnel(ctx context.Context, user domain.User) (msg *domain.Message, err error) {
+	if user, err = c.fetchUserByID(ctx, user.ID); err != nil {
 		return nil, err
 	}
 
 	user.State = domain.UserStateQualification
-	c.repo.UpdateUser(user)
+	err = c.userRepo.Update(ctx, user)
+	if err != nil {
+		msgErr := "failed to update user state"
+		c.log.Log(logger.ERROR, msgErr, "id", user.ID.String(), "error", err.Error())
+		return nil, errors.New(msgErr)
+	}
 	c.log.Log(logger.INFO, "User started funnel", "uuid", user.ID.String(), "username", user.Username)
 
 	keyboard := domain.NewKeyboard()

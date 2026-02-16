@@ -1,21 +1,26 @@
 package usecase
 
 import (
+	"context"
 	"dudanseai_bot/internal/domain"
 	"dudanseai_bot/pkg/logger"
 	"errors"
-	"strconv"
 )
 
-func (c *Core) StartBot(user domain.User) (msg *domain.Message, err error) {
-	user.ID = domain.GenerateID(strconv.FormatInt(int64(user.ChatID), 10))
-	_, ok := c.repo.GetUser(user.ID)
-	if ok {
-		c.log.Log(logger.INFO, "User already exists", "username", user.Username)
-		return nil, errors.New("user already exists")
+func (c *Core) StartBot(ctx context.Context, user domain.User) (msg *domain.Message, err error) {
+	_, err = c.userRepo.FindOne(ctx, user.ID)
+	if err == nil {
+		msgErr := "user already exists"
+		c.log.Log(logger.INFO, msgErr, "id", user.ID.String(), "username", user.Username)
+		return nil, errors.New(msgErr)
 	}
-	c.repo.CreateUser(user)
-	c.log.Log(logger.INFO, "User created", "uuid", user.ID.String(), "username", user.Username)
+	err = c.userRepo.Create(ctx, user)
+	if err != nil {
+		msgErr := "failed to create user"
+		c.log.Log(logger.ERROR, msgErr, "id", user.ID.String(), "username", user.Username, "error", err.Error())
+		return nil, errors.New(msgErr)
+	}
+	c.log.Log(logger.INFO, "User created", "id", user.ID.String(), "username", user.Username)
 
 	keyboard := domain.NewKeyboard()
 	keyboard.Row().AddButton("Начать", domain.ActionQualification)
