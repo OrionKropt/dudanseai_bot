@@ -25,8 +25,8 @@ func NewButton(text string, action ActionType) Button {
 	return Button{Text: text, Action: action}
 }
 
-func NewButtonURL(text string, action ActionType, u *url.URL) Button {
-	return Button{Text: text, Action: action, URL: u}
+func NewButtonURL(text string, u *url.URL) Button {
+	return Button{Text: text, URL: u}
 }
 
 func NewKeyboard() Keyboard {
@@ -37,8 +37,8 @@ func (k *Keyboard) AddButton(name string, action ActionType) {
 	k.markup[len(k.markup)-1] = append(k.markup[len(k.markup)-1], NewButton(name, action))
 }
 
-func (k *Keyboard) AddButtonURL(name string, action ActionType, u *url.URL) {
-	k.markup[len(k.markup)-1] = append(k.markup[len(k.markup)-1], NewButtonURL(name, action, u))
+func (k *Keyboard) AddButtonURL(name string, u *url.URL) {
+	k.markup[len(k.markup)-1] = append(k.markup[len(k.markup)-1], NewButtonURL(name, u))
 }
 
 func (k *Keyboard) Row() *Keyboard {
