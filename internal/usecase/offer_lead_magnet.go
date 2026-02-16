@@ -14,7 +14,11 @@ func (c *Core) OfferLeadMagnet(ctx context.Context, user domain.User) (msg *doma
 	if user, err = c.fetchUserByID(ctx, user.ID); err != nil {
 		return nil, err
 	}
+	user.State = domain.UserStateReady
+	if err = c.userRepo.Update(ctx, user); err != nil {
+		return nil, err
 
+	}
 	c.log.Log(logger.INFO, "offer lead magnet", "id", user.ID.String(), "username", user.Username)
 	guide, err := c.materialRepo.FindMaterialByTitle(ctx, guideTitle)
 	if err != nil {
