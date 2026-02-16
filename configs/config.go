@@ -1,33 +1,34 @@
 package configs
 
 import (
-	"encoding/json"
 	"os"
+	"strconv"
 )
 
+type DbConfig struct {
+	Host     string
+	Port     int
+	User     string
+	Password string
+	Name     string
+}
+
 type Config struct {
-	TelegramApiKey string `json:"telegram_api_key"`
-	LogLevel       string `json:"log_level"`
-	configPath     string
+	TelegramApiKey string
+	LogLevel       string
+	DbBot          DbConfig
 }
 
 func NewConfig() *Config {
-
-	return &Config{
-		LogLevel:   "debug",
-		configPath: os.Getenv("CONFIG_PATH"),
-	}
+	return &Config{}
 }
 
-func (cfg *Config) ReadConfig() error {
-	data, err := os.ReadFile(cfg.configPath)
-	if err != nil {
-		return err
-	}
-
-	if err := json.Unmarshal(data, cfg); err != nil {
-		return err
-	}
-
-	return nil
+func (cfg *Config) ReadConfig() {
+	cfg.TelegramApiKey = os.Getenv("TELEGRAM_API_KEY")
+	cfg.LogLevel = os.Getenv("LOG_LEVEL")
+	cfg.DbBot.User = os.Getenv("DB_USER")
+	cfg.DbBot.Password = os.Getenv("DB_PASSWORD")
+	cfg.DbBot.Host = os.Getenv("DB_HOST")
+	cfg.DbBot.Port, _ = strconv.Atoi(os.Getenv("DB_PORT"))
+	cfg.DbBot.Name = os.Getenv("DB_NAME")
 }

@@ -18,7 +18,6 @@ RUN make build
 FROM alpine:latest
 
 COPY --from=builder /app/bin/dudanseai_bot .
-COPY --from=builder '/app/cmd/config.json' ./config/config.json
 
 EXPOSE 8080
 

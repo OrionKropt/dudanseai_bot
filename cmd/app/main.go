@@ -10,10 +10,7 @@ import (
 
 func initialize() (cfg *configs.Config, log *slog.Logger, err error) {
 	cfg = configs.NewConfig()
-	err = cfg.ReadConfig()
-	if err != nil {
-		return nil, nil, err
-	}
+	cfg.ReadConfig()
 	logHandler := logger.NewLogHandler(os.Stdout, logger.LogHandlerOptions{
 		SlogOpts: slog.HandlerOptions{
 			Level: logger.ParseLevel(cfg.LogLevel),
@@ -29,5 +26,5 @@ func main() {
 		panic(err)
 	}
 	log.Info("Initializing dudanseai_bot")
-	app.Run(cfg, log)
+	app.Run(*cfg, log)
 }
