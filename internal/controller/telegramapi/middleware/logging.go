@@ -14,9 +14,9 @@ func LoggingMiddleware(log *logger.Logger) func(next bot.HandlerFunc) bot.Handle
 		return func(ctx context.Context, b *bot.Bot, update *models.Update) {
 			msg := update.Message
 			if msg == nil {
-				log.Log(logger.INFO, "Empty message")
+				log.Log(logger.INFO, "empty message")
 			} else {
-				log.Log(logger.INFO, fmt.Sprintf("Message %d from %s", msg.ID, msg.From.Username))
+				log.Log(logger.INFO, fmt.Sprintf("message %s from %s", msg.Text, msg.From.Username))
 			}
 
 			next(ctx, b, update)
