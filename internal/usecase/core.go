@@ -37,7 +37,7 @@ func New(log *slog.Logger, ur UserRepository, mr MaterialsRepository) *Core {
 func (c *Core) fetchUserByID(ctx context.Context, id domain.UserID) (domain.User, error) {
 	existed, err := c.userRepo.FindOne(ctx, id)
 	if err != nil {
-		c.log.Log(logger.INFO, "failed to fetch user by id", "id", id, "err", err.Error())
+		c.log.Log(logger.INFO, "failed to fetch user by id", "id", id.String(), "err", err.Error())
 		return domain.User{}, errors.New("user not exists")
 	}
 	return existed, nil
