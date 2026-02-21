@@ -43,3 +43,12 @@ type Material struct {
 func NewMaterial(t MaterialType, title, description string) Material {
 	return Material{ID: MaterialID(uuid.Generate([]byte(title))), Type: t, Title: title, Description: description}
 }
+
+func (m *Material) ParseAndSetURL(urlString string) error {
+	u, err := url.Parse(urlString)
+	if err != nil {
+		return err
+	}
+	m.URL = *u
+	return nil
+}
