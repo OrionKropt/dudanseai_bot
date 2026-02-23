@@ -13,8 +13,11 @@ const (
 )
 
 const (
-	UserStateStart = "START"
-	UserStateReady = "READY"
+	UserStateStart           = "START"
+	UserStateOfferLeadMagnet = "OFFER_LEAD_MAGNET"
+	UserStatePresentSystem   = "PRESENT_SYSTEM"
+	UserStateOfferCourse     = "OFFER_COURSE"
+	UserStateReady           = "READY"
 )
 
 const (
