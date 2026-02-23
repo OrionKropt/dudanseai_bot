@@ -47,7 +47,7 @@ func (h *LogHandler) Handle(ctx context.Context, record slog.Record) error {
 		return err
 	}
 
-	timeStr := record.Time.Format("[00:00:00.000]")
+	timeStr := record.Time.Format("02-01-2006 15:04:05")
 
 	h.logger.Println(timeStr, level, record.Message, string(bytes))
 	return nil
