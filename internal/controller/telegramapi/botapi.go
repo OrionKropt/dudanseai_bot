@@ -19,6 +19,8 @@ import (
 type UseCase interface {
 	StartBot(context.Context, domain.User) (*domain.Message, error)
 	OfferLeadMagnet(context.Context, domain.User) (*domain.Message, error)
+	PresentSystem(ctx context.Context, user domain.User) (*domain.VideoNote, error)
+	OfferCourse(ctx context.Context, user domain.User) (*domain.Message, error)
 }
 
 type BotAPI struct {
