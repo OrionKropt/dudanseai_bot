@@ -82,6 +82,11 @@ func (b *BotAPI) sendMessage(params *bot.SendMessageParams) error {
 	return err
 }
 
+func (b *BotAPI) sendVideoNote(params *bot.SendVideoNoteParams) error {
+	_, err := b.API.SendVideoNote(b.ctx, params)
+	return err
+}
+
 func (b *BotAPI) LoggingErrors(err error) {
 	var tmrErr *bot.TooManyRequestsError
 	if errors.As(err, &tmrErr) {
