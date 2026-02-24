@@ -15,8 +15,8 @@ func (m MaterialID) String() string {
 type MaterialType string
 
 const (
-	MaterialPDF  MaterialType = "pdf"
-	MaterialLink MaterialType = "link"
+	MaterialTypeFile = "file"
+	MaterialTypeLink = "link"
 )
 
 type MaterialFile struct {
