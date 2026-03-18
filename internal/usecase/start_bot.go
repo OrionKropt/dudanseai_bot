@@ -19,7 +19,7 @@ func (c *Core) StartBot(ctx context.Context, user domain.User) (msg *domain.Mess
 		c.log.Log(logger.INFO, "user created", "id", user.ID.String(), "username", user.Username)
 	} else {
 		user = existed
-		user.State = domain.UserStateStart
+		user.State = domain.UserStateOfferLeadMagnet
 		err = c.userRepo.Update(ctx, user)
 		if err != nil {
 			msgErr := "failed to update user"
@@ -31,12 +31,12 @@ func (c *Core) StartBot(ctx context.Context, user domain.User) (msg *domain.Mess
 	keyboard := domain.NewKeyboard()
 	keyboard.Row().AddButton("Начать", domain.ActionOfferLeadMagnet)
 	return domain.NewMessage(user.ChatID, `Привет 👋
-	Ты попал в AI-систему контента и продаж.
-	
-	Здесь ты узнаешь:
+Ты попал в AI-систему контента и продаж.
+
+Здесь ты узнаешь:
 	— почему AI-контент не приносит денег
 	— как получать заявки без камеры
 	— как собрать систему, а не хаос
-	
-	Готов начать?`, keyboard), nil
+
+Готов начать?`, keyboard), nil
 }
