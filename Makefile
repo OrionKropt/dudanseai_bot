@@ -13,6 +13,12 @@ dev-docker-compose-up:
 dev-docker-compose-down:
 	sudo docker compose -f docker-compose.dev.yml --env-file .env.dev down
 
+prod-docker-compose-up:
+	sudo docker compose -f docker-compose.prod.yml --env-file .env up -d --build
+
+prod-docker-compose-down:
+	sudo docker compose -f docker-compose.prod.yml --env-file .env down
+
 build:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(BIN_FILE) $(CMD_DIR)
 
