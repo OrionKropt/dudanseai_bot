@@ -2,8 +2,12 @@ APP_NAME := dudanseai_bot
 CMD_DIR  := ./cmd/app
 BIN_DIR  := ./bin
 BIN_FILE := $(BIN_DIR)/$(APP_NAME)
+BIN_FILE_DEV := ./tmp/$(APP_NAME)
 
-.PHONY: fmt vet build clean run test lint dev tidy
+.PHONY: fmt vet build build-dev clean run test
+.PHONY: lint dev tidy
+.PHONY: dev-docker-compose-up dev-docker-compose-down
+.PHONY: prod-docker-compose-up prod-docker-compose-down
 
 all: build
 
@@ -21,6 +25,9 @@ prod-docker-compose-down:
 
 build:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(BIN_FILE) $(CMD_DIR)
+
+build-dev:
+	go build -buildvcs=false -o $(BIN_FILE_DEV) $(CMD_DIR)
 
 run: build
 	go run $(CMD_DIR)

@@ -1,0 +1,13 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "make build-dev"
+entrypoint = ["tmp/dudanseai_bot"]
+include_ext = ["go"]
+exclude_dir = ["vendor", "tmp", ".git", "bin"]
+full_bin = "tmp/dudanseai_bot"
+
+[log]
+time = true
+color = true

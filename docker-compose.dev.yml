@@ -5,6 +5,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: dev
+
+    volumes:
+      - .:/app
+
     depends_on:
       db_bot:
           condition: service_healthy
