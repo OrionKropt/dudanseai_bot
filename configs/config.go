@@ -16,6 +16,7 @@ type DbConfig struct {
 type Config struct {
 	TelegramApiKey string
 	LogLevel       string
+	ProxyUrl       string
 	DbBot          DbConfig
 }
 
@@ -26,6 +27,7 @@ func NewConfig() *Config {
 func (cfg *Config) ReadConfig() {
 	cfg.TelegramApiKey = os.Getenv("TELEGRAM_API_KEY")
 	cfg.LogLevel = os.Getenv("LOG_LEVEL")
+	cfg.ProxyUrl = os.Getenv("PROXY_URL")
 	cfg.DbBot.User = os.Getenv("DB_USER")
 	cfg.DbBot.Password = os.Getenv("DB_PASSWORD")
 	cfg.DbBot.Host = os.Getenv("DB_HOST")
