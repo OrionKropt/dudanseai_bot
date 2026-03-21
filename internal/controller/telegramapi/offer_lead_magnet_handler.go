@@ -29,7 +29,7 @@ func (b *BotAPI) OfferLeadMagnetHandler(ctx context.Context, user domain.User) {
 				b.LoggingErrors(err)
 			}
 		}
-		
+
 		time.AfterFunc(time.Hour*24, func() {
 			msg, err = b.uc.OfferCourse(detachedCtx, user)
 			if err != nil {

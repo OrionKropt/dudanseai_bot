@@ -32,7 +32,7 @@ func Run(cfg configs.Config, log *slog.Logger) {
 	core := usecase.New(log, &userRepo, &materialsRepo)
 	bot := tgapi.NewBot(log, core, cfg.TelegramApiKey)
 
-	err = bot.Init()
+	err = bot.Init(cfg.ProxyUrl)
 	if err != nil {
 		log.Error("Bot initialization failed", "error", err.Error())
 		return

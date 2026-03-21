@@ -8,8 +8,11 @@ import (
 	"dudanseai_bot/pkg/logger"
 	"errors"
 	"log/slog"
+	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
+	"time"
 
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
@@ -47,14 +50,25 @@ func (b *BotAPI) initHandlers() {
 	b.actionsHandler.RegisterHandler(domain.ActionOfferLeadMagnet, b.OfferLeadMagnetHandler)
 }
 
-func (b *BotAPI) Init() (err error) {
+func (b *BotAPI) Init(proxy string) (err error) {
 	b.log.Log(logger.INFO, "Initializing BotAPI")
 
 	opts := []bot.Option{
 		bot.WithMiddlewares(middleware.LoggingMiddleware(b.log)),
 		bot.WithDefaultHandler(func(ctx context.Context, bot *bot.Bot, update *models.Update) {
-			b.log.Log(logger.INFO, "Default handler")
+			b.log.Log(logger.INFO, "Default handler", "message", update.Message.Text)
 		}),
+	}
+
+	if proxy != "" {
+		proxyURL, _ := url.Parse(proxy)
+		transport := &http.Transport{Proxy: http.ProxyURL(proxyURL)}
+
+		httpClient := &http.Client{
+			Transport: transport,
+			Timeout:   time.Minute,
+		}
+		opts = append(opts, bot.WithHTTPClient(time.Minute, httpClient))
 	}
 
 	b.API, err = bot.New(b.token, opts...)
