@@ -23,6 +23,7 @@ services:
     environment:
       TELEGRAM_API_KEY: ${TELEGRAM_API_KEY}
       LOG_LEVEL: ${LOG_LEVEL}
+      PROXY_URL: ${PROXY_URL}
       DB_HOST: ${DB_SERVICE_NAME}
       DB_PORT: ${DB_PORT_INTERNAL}
       DB_USER: ${DB_USER}
