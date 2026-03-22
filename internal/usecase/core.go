@@ -28,14 +28,20 @@ type MaterialsRepository interface {
 	// TODO LoadFile ...
 }
 
+type MessageSender interface {
+	SendMessage(msg domain.Message) error
+	SendVideoNote(note *domain.VideoNote) error
+}
+
 type Core struct {
 	userRepo     UserRepository
 	materialRepo MaterialsRepository
+	sender       MessageSender
 	log          logger.Logger
 }
 
-func New(log *slog.Logger, ur UserRepository, mr MaterialsRepository) *Core {
-	return &Core{userRepo: ur, materialRepo: mr, log: logger.Logger{Name: "Core", Inst: log}}
+func New(log *slog.Logger, ur UserRepository, mr MaterialsRepository, s MessageSender) *Core {
+	return &Core{userRepo: ur, materialRepo: mr, sender: s, log: logger.Logger{Name: "Core", Inst: log}}
 }
 
 func (c *Core) fetchUserByID(ctx context.Context, id domain.UserID) (domain.User, error) {

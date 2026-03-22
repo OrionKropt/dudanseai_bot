@@ -29,21 +29,22 @@ func (c *Core) restartOnboarding(ctx context.Context, user domain.User) error {
 	return c.startOnboarding(ctx, user)
 }
 
-func (c *Core) StartBot(ctx context.Context, user domain.User) (msg *domain.Message, err error) {
+func (c *Core) StartBot(ctx context.Context, user domain.User) (err error) {
 	_, err = c.fetchUserByID(ctx, user.ID)
 	if err != nil {
 		if err := c.startOnboarding(ctx, user); err != nil {
-			return nil, err
+			return err
 		}
 	} else {
 		if err := c.restartOnboarding(ctx, user); err != nil {
-			return nil, err
+			return err
 		}
 	}
 
 	keyboard := domain.NewKeyboard()
 	keyboard.Row().AddButton("Начать", domain.ActionOfferLeadMagnet)
-	return domain.NewMessage(user.ChatID, `Привет 👋
+
+	err = c.sender.SendMessage(domain.NewMessage(user.ChatID, `Привет 👋
 Ты попал в AI-систему контента и продаж.
 
 Здесь ты узнаешь:
@@ -51,5 +52,9 @@ func (c *Core) StartBot(ctx context.Context, user domain.User) (msg *domain.Mess
 	— как получать заявки без камеры
 	— как собрать систему, а не хаос
 
-Готов начать?`, keyboard), nil
+Готов начать?`, keyboard))
+	if err != nil {
+		c.log.Log(logger.ERROR, "failed to start bot", "id", user.ID.String(), "username", user.Username, "error", err.Error())
+	}
+	return err
 }
