@@ -5,7 +5,6 @@ import (
 	"dudanseai_bot/internal/domain"
 	"dudanseai_bot/pkg/logger"
 	"errors"
-	"fmt"
 	"net/url"
 	"time"
 )
@@ -16,11 +15,10 @@ func (c *Core) OfferLeadMagnet(ctx context.Context, user domain.User) (msg *doma
 		return nil, err
 	}
 	c.log.Log(logger.INFO, "offer lead magnet", "id", user.ID.String(), "username", user.Username)
-	guide, err := c.materialRepo.FindMaterialByTitle(ctx, guideTitle)
+
+	guide, err := c.fetchMaterialByTitle(ctx, guideTitle)
 	if err != nil {
-		msgErr := fmt.Sprintf("Failed to get %s", guideTitle)
-		c.log.Log(logger.ERROR, msgErr, "error", err.Error())
-		return nil, errors.New(msgErr)
+		return nil, err
 	}
 	keyboard := domain.NewKeyboard()
 	link, err := url.Parse(guide.URL.String())
@@ -30,6 +28,11 @@ func (c *Core) OfferLeadMagnet(ctx context.Context, user domain.User) (msg *doma
 		return nil, errors.New(msgErr)
 	}
 	keyboard.Row().AddButtonURL("📥 Забрать гайд", link)
+
+	if err := c.addMaterialToUser(ctx, user, guide); err != nil {
+		c.log.Log(logger.ERROR, err.Error())
+		return nil, err
+	}
 
 	user.State = domain.UserStatePresentSystem
 	user.LastInteraction = time.Now()

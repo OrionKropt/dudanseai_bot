@@ -30,6 +30,11 @@ func (c *Core) OfferCourse(ctx context.Context, user domain.User) (msg *domain.M
 	}
 	keyboard.Row().AddButtonURL("🚀 Получить полный курс", link)
 
+	if err := c.addMaterialToUser(ctx, user, courseAccessOffer); err != nil {
+		c.log.Log(logger.ERROR, err.Error())
+		return nil, err
+	}
+
 	user.State = domain.UserStateReady
 	if err := c.userRepo.Update(ctx, user); err != nil {
 		return nil, err
