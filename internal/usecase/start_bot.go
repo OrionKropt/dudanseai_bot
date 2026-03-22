@@ -7,24 +7,37 @@ import (
 	"errors"
 )
 
-func (c *Core) StartBot(ctx context.Context, user domain.User) (msg *domain.Message, err error) {
-	existed, err := c.fetchUserByID(ctx, user.ID)
+func (c *Core) startOnboarding(ctx context.Context, user domain.User) error {
+	user.State = domain.UserStateOfferLeadMagnet
+	err := c.userRepo.Create(ctx, user)
 	if err != nil {
-		err = c.userRepo.Create(ctx, user)
-		if err != nil {
-			msgErr := "failed to create user"
-			c.log.Log(logger.ERROR, msgErr, "id", user.ID.String(), "username", user.Username, "error", err.Error())
-			return nil, errors.New(msgErr)
+		msgErr := "failed to create user"
+		c.log.Log(logger.ERROR, msgErr, "id", user.ID.String(), "username", user.Username, "error", err.Error())
+		return errors.New(msgErr)
+	}
+	c.log.Log(logger.INFO, "user created", "id", user.ID.String(), "username", user.Username)
+	return nil
+}
+
+func (c *Core) restartOnboarding(ctx context.Context, user domain.User) error {
+	err := c.userRepo.Delete(ctx, user.ID)
+	if err != nil {
+		msgErr := "failed to delete user"
+		c.log.Log(logger.ERROR, msgErr, "id", user.ID.String(), "username", user.Username, "error", err.Error())
+		return errors.New(msgErr)
+	}
+	return c.startOnboarding(ctx, user)
+}
+
+func (c *Core) StartBot(ctx context.Context, user domain.User) (msg *domain.Message, err error) {
+	_, err = c.fetchUserByID(ctx, user.ID)
+	if err != nil {
+		if err := c.startOnboarding(ctx, user); err != nil {
+			return nil, err
 		}
-		c.log.Log(logger.INFO, "user created", "id", user.ID.String(), "username", user.Username)
 	} else {
-		user = existed
-		user.State = domain.UserStateOfferLeadMagnet
-		err = c.userRepo.Update(ctx, user)
-		if err != nil {
-			msgErr := "failed to update user"
-			c.log.Log(logger.ERROR, msgErr, "id", user.ID.String(), "username", user.Username)
-			return nil, errors.New(msgErr)
+		if err := c.restartOnboarding(ctx, user); err != nil {
+			return nil, err
 		}
 	}
 
