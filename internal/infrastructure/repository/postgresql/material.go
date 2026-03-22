@@ -158,6 +158,32 @@ func (r MaterialsRepository) UpdateMaterial(ctx context.Context, m domain.Materi
 	return nil
 }
 
+func (r MaterialsRepository) CreateUserMaterial(ctx context.Context, u domain.UserMaterial) error {
+	q := `
+	INSERT INTO user_materials
+	(user_id, material_id, sent_at)
+	VALUES ($1, $2, $3)
+`
+	_, err := r.client.Exec(ctx, q, u.UserID, u.MaterialID, u.SentAt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r MaterialsRepository) FindUserMaterialByMaterialID(ctx context.Context, userID domain.UserID, materialID domain.MaterialID) (um domain.UserMaterial, err error) {
+	q := `
+	SELECT user_material_id, user_id, material_id, sent_at
+	FROM user_materials
+	WHERE user_id = $1 AND material_id = $2
+`
+	err = r.client.QueryRow(ctx, q, userID, materialID).Scan(um.ID, um.UserID, um.MaterialID, um.SentAt)
+	if err != nil {
+		return domain.UserMaterial{}, err
+	}
+	return um, nil
+}
+
 func NewMaterialsRepository(client *Client) (MaterialsRepository, error) {
 	if err := client.Ping(context.Background()); err != nil {
 		return MaterialsRepository{}, err
