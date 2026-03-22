@@ -17,8 +17,8 @@ type Message struct {
 	Keys   Keyboard
 }
 
-func NewMessage(chatID ChatID, text string, keys Keyboard) *Message {
-	return &Message{ChatID: chatID, Text: text, Keys: keys}
+func NewMessage(chatID ChatID, text string, keys Keyboard) Message {
+	return Message{ChatID: chatID, Text: text, Keys: keys}
 }
 
 func NewButton(text string, action ActionType) Button {
