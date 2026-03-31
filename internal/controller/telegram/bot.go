@@ -11,8 +11,8 @@ import (
 )
 
 type UseCase interface {
-	StartBot(context.Context, domain.User) error
-	OfferLeadMagnet(context.Context, domain.User) error
+	StartBot(context.Context, domain.User)
+	OfferLeadMagnet(context.Context, domain.User)
 	PresentSystem(ctx context.Context, user domain.User) error
 	OfferCourse(ctx context.Context, user domain.User) error
 }
