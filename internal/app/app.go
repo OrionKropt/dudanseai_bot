@@ -12,7 +12,7 @@ import (
 )
 
 func Run(cfg configs.Config, log *slog.Logger) {
-	sqlClient, err := postgresql.NewClient(context.Background(), 5, cfg.DbBot, log)
+	sqlClient, err := postgresql.NewClient(context.Background(), 5, cfg.DbBot)
 	if err != nil {
 		log.Error("Failed to create data base client", "error", err.Error())
 		return
