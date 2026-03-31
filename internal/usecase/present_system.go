@@ -4,6 +4,7 @@ import (
 	"context"
 	"dudanseai_bot/internal/domain"
 	"dudanseai_bot/pkg/logger"
+	"fmt"
 )
 
 func (c *Core) PresentSystem(ctx context.Context, user domain.User) (err error) {
@@ -30,7 +31,7 @@ func (c *Core) PresentSystem(ctx context.Context, user domain.User) (err error) 
 
 	err = c.sender.SendVideoNote(domain.NewVideoNote(user.ChatID, domain.NewFileByID(videoNote.TelegramFileID)))
 	if err != nil {
-		c.log.Log(logger.ERROR, "failed to send video note", "id", user.ID.String(), "username", user.Username, "error", err.Error())
+		err = fmt.Errorf("failed to send video note: %v", err)
 	}
 	return err
 }

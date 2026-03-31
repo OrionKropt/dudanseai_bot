@@ -4,16 +4,17 @@ import (
 	"context"
 	"dudanseai_bot/internal/domain"
 	"dudanseai_bot/pkg/logger"
-	"errors"
+	"fmt"
 	"net/url"
 )
 
 func (c *Core) OfferCourse(ctx context.Context, user domain.User) (err error) {
 	offerTitle := "cta_buy_course"
+	c.log.Log(logger.INFO, "offer course", "id", user.ID.String(), "username", user.Username)
 	if user, err = c.fetchUserByID(ctx, user.ID); err != nil {
 		return err
 	}
-	c.log.Log(logger.INFO, "offer course", "id", user.ID.String(), "username", user.Username)
+
 	courseAccessOffer, err := c.fetchMaterialByTitle(ctx, offerTitle)
 	if err != nil {
 		return err
@@ -22,9 +23,7 @@ func (c *Core) OfferCourse(ctx context.Context, user domain.User) (err error) {
 	keyboard := domain.NewKeyboard()
 	link, err := url.Parse(courseAccessOffer.URL.String())
 	if err != nil {
-		msgErr := "failed to parse URL"
-		c.log.Log(logger.ERROR, msgErr, "error", err.Error())
-		return errors.New(msgErr)
+		return err
 	}
 	keyboard.Row().AddButtonURL("🚀 Получить полный курс", link)
 
@@ -39,7 +38,7 @@ func (c *Core) OfferCourse(ctx context.Context, user domain.User) (err error) {
 
 	err = c.sender.SendMessage(domain.NewMessage(user.ChatID, courseAccessOffer.Description, keyboard))
 	if err != nil {
-		c.log.Log(logger.ERROR, "failed to offer course", "id", user.ID.String(), "username", user.Username, "error", err.Error())
+		err = fmt.Errorf("failed to send message: %v", err)
 	}
 	return err
 }

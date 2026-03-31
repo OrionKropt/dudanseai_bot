@@ -4,7 +4,6 @@ import (
 	"context"
 	"dudanseai_bot/internal/domain"
 	"dudanseai_bot/pkg/logger"
-	"errors"
 	"fmt"
 	"log/slog"
 )
@@ -47,8 +46,7 @@ func New(log *slog.Logger, ur UserRepository, mr MaterialsRepository, s MessageS
 func (c *Core) fetchUserByID(ctx context.Context, id domain.UserID) (domain.User, error) {
 	existed, err := c.userRepo.FindOne(ctx, id)
 	if err != nil {
-		c.log.Log(logger.INFO, "failed to fetch user by id", "id", id.String(), "error", err.Error())
-		return domain.User{}, errors.New("user not exists")
+		return domain.User{}, fmt.Errorf("failed to fetch user by id: %s: %v", id.String(), err)
 	}
 	return existed, nil
 }
@@ -56,9 +54,7 @@ func (c *Core) fetchUserByID(ctx context.Context, id domain.UserID) (domain.User
 func (c *Core) fetchMaterialByTitle(ctx context.Context, title string) (domain.Material, error) {
 	m, err := c.materialRepo.FindMaterialByTitle(ctx, title)
 	if err != nil {
-		msgErr := fmt.Sprintf("failed to get %s", title)
-		c.log.Log(logger.ERROR, msgErr, "error", err.Error())
-		return domain.Material{}, errors.New(msgErr)
+		return domain.Material{}, fmt.Errorf("failed to find material by title: %s: %v", title, err)
 	}
 	return m, nil
 }
@@ -69,10 +65,13 @@ func (c *Core) addMaterialToUser(ctx context.Context, u domain.User, m domain.Ma
 	}
 
 	if err := c.materialRepo.CreateUserMaterial(ctx, domain.CreateUserMaterial(u.ID, m.ID)); err != nil {
-		msgErr := fmt.Sprintf("failed to add material %s to user %s", m.Title, u.Username)
-		c.log.Log(logger.ERROR, msgErr, "error", err.Error())
-		return errors.New(msgErr)
+		return fmt.Errorf("failed to add material %s to user %s: %v", m.Title, u.Username, err)
 	}
 
 	return nil
+}
+
+func (c *Core) logError(u domain.User, msg string, err error) {
+	c.log.Log(logger.ERROR, "failed to offer lead magnet", "id", u.ID.String(),
+		"username", u.Username, "msg", msg, "error", err.Error())
 }
